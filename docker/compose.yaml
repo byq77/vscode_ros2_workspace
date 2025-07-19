@@ -1,15 +1,15 @@
 services:
-  ros2_jazzy_nvidia:
+  ros2_kilted_nvidia:
     build:
       context: ..
       dockerfile: docker/Dockerfile
       tags:
-        - ros2_jazzy_nvidia:latest
+        - ros2_kilted_nvidia:latest
       target: app
       args:
-        - BASE_DOCKER_IMAGE=osrf/ros:jazzy-desktop-full
+        - BASE_DOCKER_IMAGE=osrf/ros:kilted-desktop-full
         - WORKSPACE=/ros_ws
-    container_name: ros2_jazzy_nvidia
+    container_name: ros2_kilted_nvidia
     volumes:
       - type: bind
         source: /dev

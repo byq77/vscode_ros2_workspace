@@ -1,4 +1,4 @@
-ARG BASE_DOCKER_IMAGE=osrf/ros:jazzy-desktop-full
+ARG BASE_DOCKER_IMAGE=osrf/ros:kilted-desktop-full
 FROM $BASE_DOCKER_IMAGE AS base
 
 SHELL ["/bin/bash", "-c"]

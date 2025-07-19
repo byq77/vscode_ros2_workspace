@@ -5,10 +5,10 @@
         "*.xacro": "xml"
     },
     "python.autoComplete.extraPaths": [
-        "/opt/ros/jazzy/lib/python3.12/site-packages"
+        "/opt/ros/kilted/lib/python3.12/site-packages"
     ],
     "python.analysis.extraPaths": [
-        "/opt/ros/jazzy/lib/python3.12/site-packages"
+        "/opt/ros/kilted/lib/python3.12/site-packages"
     ],
     "python.envFile": "${workspaceFolder}/.env",
     "[python]": {
@@ -21,7 +21,7 @@
     },
     "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
     "C_Cpp.formatting": "disabled",
-    "uncrustify.configPath.linux": "/opt/ros/jazzy/lib/python3.12/site-packages/ament_uncrustify/configuration/ament_code_style_0_78.cfg",
+    "uncrustify.configPath.linux": "/opt/ros/kilted/lib/python3.12/site-packages/ament_uncrustify/configuration/ament_code_style_0_78.cfg",
     "[cpp]": {
         "editor.defaultFormatter": "zachflower.uncrustify"
     },
@@ -68,6 +68,6 @@
         ".vscode-insiders",
         ".devcontainer/devcontainer.json"
     ],
-    "ament-task-provider.envSetup": "source /opt/ros/jazzy/setup.bash",
-    "ros.distro": "jazzy"
+    "ament-task-provider.envSetup": "source /opt/ros/kilted/setup.bash",
+    "ros.distro": "kilted"
 }

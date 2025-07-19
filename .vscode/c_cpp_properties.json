@@ -7,17 +7,14 @@
       },
       "includePath": [
         "/ros_ws/install/include/**",
-        "/opt/ros/jazzy/include/**",
-        "/ros_ws/src/examples/rclcpp/composition/minimal_composition/include/**",
-        "/ros_ws/src/examples/rclcpp/executors/cbg_executor/include/**",
-        "/ros_ws/src/examples/rclcpp/wait_set/include/**",
+        "/opt/ros/kilted/include/**",
         "/usr/include/**"
       ],
       "name": "ROS",
       "intelliSenseMode": "gcc-x64",
       "compilerPath": "/usr/bin/gcc",
       "cStandard": "gnu11",
-      "cppStandard": "c++14"
+      "cppStandard": "c++17"
     }
   ],
   "version": 4

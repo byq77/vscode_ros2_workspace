@@ -85,7 +85,7 @@
             "label": "source",
             "detail": "Source the workspace",
             "type": "shell",
-            "command": "source /opt/ros/jazzy/setup.bash",
+            "command": "source /opt/ros/kilted/setup.bash",
             "problemMatcher": []
         },
         // Linting and static code analysis tasks
