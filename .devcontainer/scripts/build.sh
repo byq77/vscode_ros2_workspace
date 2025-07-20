@@ -26,9 +26,20 @@ BUILD_TYPE="${BUILD_TYPE:-RelWithDebInfo}"
 
 colcon_build() {
     local extra_args="$1"
+    local install_config="" 
+
+    if [ "${USE_MERGE_INSTALL:-true}" == "true" ]; then
+        install_config+=" --merge-install"
+    fi
+
+    if [ "${USE_SYMLINK_INSTALL:-true}" == "true" ]; then
+        install_config+=" --symlink-install"
+    fi
+
+    echo "Building with install config: $install_config"
+
     colcon build \
-        --merge-install \
-        --symlink-install \
+        $install_config \
         --base-paths "/ros_ws/src" \
         --cmake-args "-DCMAKE_BUILD_TYPE=$BUILD_TYPE" "-DCMAKE_EXPORT_COMPILE_COMMANDS=On" \
         -Wall -Wextra -Wpedantic \

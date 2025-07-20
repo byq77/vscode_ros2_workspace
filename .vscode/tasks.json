@@ -13,19 +13,13 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": "$gcc"
-        },
-        {
-            "label": "build workspace debug",
-            "detail": "Build the workspace (debug)",
-            "type": "shell",
-            "command": ". /ros_ws/.devcontainer/scripts/build.sh all",
             "options": {
                 "env": {
-                    "BUILD_TYPE": "Debug"
+                    "BUILD_TYPE": "${input:buildType}",
+                    "USE_MERGE_INSTALL": "${input:useMergeInstall}",
+                    "USE_SYMLINK_INSTALL": "${input:useSymlinkInstall}"
                 }
             },
-            "group": "build",
             "problemMatcher": "$gcc"
         },
         {
@@ -37,22 +31,13 @@
                 "kind": "build",
                 "isDefault": false
             },
-            "problemMatcher": "$gcc"
-        },
-        {
-            "label": "build pkg debug",
-            "detail": "Build a specific package from the workspace (debug).",
-            "type": "shell",
-            "command": ". /ros_ws/.devcontainer/scripts/build.sh ${input:packageName}",
             "options": {
                 "env": {
-                    "BUILD_TYPE": "Debug"
+                    "BUILD_TYPE": "${input:buildType}",
+                    "USE_MERGE_INSTALL": "${input:useMergeInstall}",
+                    "USE_SYMLINK_INSTALL": "${input:useSymlinkInstall}"
                 }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
+            },            
             "problemMatcher": "$gcc"
         },
         // Test tasks
@@ -61,6 +46,11 @@
             "detail": "Run all unit tests and show results.",
             "type": "shell",
             "command": ". /ros_ws/.devcontainer/scripts/test.sh",
+            "options": {
+                "env": {
+                    "USE_MERGE_INSTALL": "${input:useMergeInstall}"
+                }
+            },            
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -413,6 +403,38 @@
             "type": "promptString",
             "description": "Enter the name of the package",
             "default": "my_package"
+        },
+        {
+            "id": "buildType",
+            "type": "pickString",
+            "description": "Select the build type",
+            "default": "RelWithDebInfo",
+            "options": [
+                "Debug",
+                "Release",
+                "RelWithDebInfo",
+                "MinSizeRel",
+            ]
+        },
+        {
+            "id": "useMergeInstall",
+            "type": "pickString",
+            "description": "Do you want to use the merged install space?",
+            "default": "true",
+            "options": [
+                "true",
+                "false"
+            ]
+        },
+        {
+            "id": "useSymlinkInstall",
+            "type": "pickString",
+            "description": "Do you want to use the symlink install space?",
+            "default": "true",
+            "options": [
+                "true",
+                "false"
+            ]
         }
     ]
 }
