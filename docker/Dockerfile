@@ -65,10 +65,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install ROS 2 big packages
 RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \ 
-    ros-${ROS_DISTRO}-plotjuggler-ros \
+    # Does not exist yet for kilted?
+    # ros-${ROS_DISTRO}-plotjuggler-ros \
     ros-${ROS_DISTRO}-rqt* \
     ros-${ROS_DISTRO}-ament-* \
-    ros-${ROS_DISTRO}-rviz2
+    ros-${ROS_DISTRO}-rviz2 \
+    && sudo rm -rf /var/lib/apt/lists/*
 
 ARG WORKSPACE=/ros_ws
 ENV WORKSPACE=$WORKSPACE
