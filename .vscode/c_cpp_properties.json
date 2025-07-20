@@ -2,15 +2,14 @@
   "configurations": [
     {
       "browse": {
-        "databaseFilename": "${default}",
+        "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db",
         "limitSymbolsToIncludedHeaders": false
       },
       "includePath": [
-        "/ros_ws/install/include/**",
         "/opt/ros/kilted/include/**",
         "/usr/include/**"
       ],
-      "name": "ROS",
+      "name": "ros2",
       "intelliSenseMode": "gcc-x64",
       "compilerPath": "/usr/bin/gcc",
       "cStandard": "gnu11",

@@ -20,7 +20,6 @@
                 "ms-python.python",
                 "ms-vscode.cpptools",
                 "ms-vscode.cmake-tools",
-                "ms-iot.vscode-ros",
                 "althack.ament-task-provider",
                 "zachflower.uncrustify",
                 "aaron-bond.better-comments",
@@ -45,7 +44,8 @@
                 "wk-j.save-and-run",
                 "charliermarsh.ruff",
                 "tamasfe.even-better-toml",
-                "ymotongpoo.licenser"
+                "ymotongpoo.licenser",
+                "Ranch-Hand-Robotics.rde-pack"
             ]
         }
     }

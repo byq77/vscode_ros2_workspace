@@ -8,3 +8,9 @@ docs/*
 __pycache__/
 *.py[cod]
 *$py.class
+
+.vscode/*
+!vscode/c_cpp_properties.json
+!vscode/settings.json
+!vscode/tasks.json
+!vscode/launch.json
