@@ -5,57 +5,98 @@ SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Create a non-root user if necessary
-
-# ARG USERNAME=ros
-# ARG USER_UID=1000
-# ARG USER_GID=$USER_UID
-
-# I assume there is already a user created in the base image
-ARG USERNAME=ubuntu
-ENV USERNAME=$USERNAME
-
-# RUN groupadd --gid $USER_GID $USERNAME \
-#   && useradd -m \
-#   -s /bin/bash \
-#   -G sudo,plugdev,dialout \
-#   --uid $USER_UID \
-#   --gid $USER_GID \
-#   $USERNAME \
-#   # Add sudo support for the non-root user
-#   && apt-get update \
-#   && apt-get install -y sudo \
-#   && echo "$USERNAME ALL=\(root\) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME\
-#   && chmod 0440 /etc/sudoers.d/$USERNAME \
-#   && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update \
-    && apt-get install -y sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME \
-    && rm -rf /var/lib/apt/lists/*
-
 # Basic tools
-RUN apt-get update && apt-get install -y \
-    python3-pip \
-    python3-argcomplete \
-    python3-rosdoc2 \
-    htop \
-    git \
-    vim \
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    bash-completion \
     gdb \
+    gettext-base \
+    git-core \
+    openssh-client \
+    python3-argcomplete \
+    python3-colcon-common-extensions \
+    python3-rosdep \
+    ros-dev-tools \
+    vim \
     rsync \
     strace \
-    ros-dev-tools \
-    bash-completion \
+    sudo \
+    # For GUI
+    libx11-xcb1 libxcb1 libxcb-render0 libxcb-shm0 libxcb-xfixes0 libxcb-shape0 \
+    libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-util1 \
+    libxcb-xinerama0 libxcb-xkb1 libxkbcommon0 libxkbcommon-x11-0 \
+    libglu1-mesa libxi6 libsm6 libxrender1 libfontconfig1 \    
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-USER ubuntu
+### For Windows, uncomment the following lines to install WSLg dependencies and utilize vGPU acceleration 
+# RUN apt-get update \
+#    && apt-get -y install \
+#           vainfo \
+#           mesa-va-drivers \
+#           mesa-utils \
+#    # Clean up
+#         && apt-get autoremove -y \
+#         && apt-get clean -y \
+#         && rm -rf /var/lib/apt/lists/*
+# ENV LIBVA_DRIVER_NAME=d3d12
+# ENV LD_LIBRARY_PATH=/usr/lib/wsl/lib
+# CMD vainfo --display drm --device /dev/dri/card0
 
-# Set up autocompletion for user
-RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /home/$USERNAME/.bashrc \
-    && echo "if [ -f /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash ]; then source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash; fi" >> /home/$USERNAME/.bashrc \
-    && echo "if [ -f /usr/share/colcon_cd/function/colcon_cd.sh ]; then source /usr/share/colcon_cd/function/colcon_cd.sh; export _colcon_cd_root=/opt/ros/${ROS_DISTRO}; fi" >> /home/$USERNAME/.bashrc 
+################
+# uncomment below for nvidia support
+# Expose the nvidia driver to allow opengl 
+# Dependencies for glvnd and X11.
+################
+RUN apt-get update \
+    && apt-get install -y -qq --no-install-recommends \
+    libglvnd0 \
+    libgl1 \
+    libglx0 \
+    libegl1 \
+    libxext6 \
+    libx11-6 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Env vars for the nvidia-container-runtime.
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute
+
+ENV QT_X11_NO_MITSHM=1
+
+# Set up auto-source of workspace for ros 
+ARG USERNAME=ros
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+# Find and replace any user with matching UID
+RUN set -eux; \
+    existing_user=$(getent passwd "$USER_UID" | cut -d: -f1 || true); \
+    if [ -n "$existing_user" ]; then \
+    usermod -l $USERNAME -d /home/$USERNAME -m $existing_user && \
+    groupmod -n $USERNAME $existing_user && \
+    echo "Renamed $existing_user to $USERNAME"; \
+    else \
+    groupadd --gid $USER_GID $USERNAME && \
+    useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME && \
+    echo "Created new user $USERNAME"; \
+    fi
+# Ensure necessary directories and permissions
+RUN mkdir -p /home/$USERNAME /run/user/$USER_UID && \
+    chown -R $USER_UID:$USER_GID /home/$USERNAME /run/user/$USER_UID
+
+# Add sudo support for the non-root user
+RUN echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME \
+    && touch /home/$USERNAME/.sudo_as_admin_successful
+
+# Set up python symlinks for vscode paths
+RUN PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info[0]}.{sys.version_info[1]}')") \
+ && tgt="/opt/ros/${ROS_DISTRO}/lib/python${PYTHON_VERSION}/site-packages" \
+ && [ -d "$tgt" ] && ln -s "$tgt" "/opt/ros/${ROS_DISTRO}/lib/ros_site_packages"
+
+USER ros
 
 ENV DEBIAN_FRONTEND=
 
@@ -67,6 +108,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \ 
     # Does not exist yet for kilted?
     # ros-${ROS_DISTRO}-plotjuggler-ros \
+    python3-rosdoc2 \
     ros-${ROS_DISTRO}-rqt* \
     ros-${ROS_DISTRO}-ament-* \
     ros-${ROS_DISTRO}-rviz2 \
@@ -76,6 +118,12 @@ ARG WORKSPACE=/ros_ws
 ENV WORKSPACE=$WORKSPACE
 WORKDIR $WORKSPACE
 
-RUN echo "if [ -f ${WORKSPACE}/install/setup.bash ]; then source ${WORKSPACE}/install/setup.bash; fi" >> /home/$USERNAME/.bashrc
+# Set up autocompletion for user
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /home/$USERNAME/.bashrc \
+    && echo "if [ -f /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash ]; then source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash; fi" >> /home/$USERNAME/.bashrc \
+    && echo "if [ -f /usr/share/colcon_cd/function/colcon_cd.sh ]; then source /usr/share/colcon_cd/function/colcon_cd.sh; export _colcon_cd_root=/opt/ros/${ROS_DISTRO}; fi" >> /home/$USERNAME/.bashrc \
+    && echo "if [ -f ${WORKSPACE}/install/setup.bash ]; then source ${WORKSPACE}/install/setup.bash; fi" >> /home/$USERNAME/.bashrc
+
+ENV AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1
 
 ENV DEBIAN_FRONTEND=

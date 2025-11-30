@@ -11,30 +11,35 @@ services:
         - WORKSPACE=/ros_ws
     container_name: ros2_kilted_nvidia
     volumes:
-      - type: bind
-        source: /dev
-        target: /dev
+      # - type: bind
+      #   source: /dev
+      #   target: /dev
       - type: bind
         source: ../
         target: /ros_ws
+      # X11 Host
       - type: bind
         source: /tmp/.X11-unix
         target: /tmp/.X11-unix
         consistency: cached
-      # uncomment the following line if you want to use the WSLg GUI
-      # - type: bind
-      #   source: /mnt/wslg
-      #   target: /mnt/wslg
-      #   consistency: cached
+      # Wayland host
+      - type: bind
+        source: /mnt/wslg
+        target: /mnt/wslg
+        consistency: cached
       # uncomment to use intel iGPU
       # - type: bind
       #   source: /dev/dri
       #   target: /dev/dri
+      - type: bind
+        source: /run/user/1000
+        target: /run/user/1000
     # privileged: true
     # network: host
     runtime: nvidia
     ipc: host
-    tty: true            
+    tty: true
+    gpus: all
     cap_add:
       - SYS_PTRACE
     group_add:
@@ -46,10 +51,13 @@ services:
     environment:
       - ROS_DOMAIN_ID=1
       - DISPLAY=${DISPLAY}
-      - NVIDIA_DRIVER_CAPABILITIES=all
-      - NVIDIA_VISIBLE_DEVICES=all
-      - QT_X11_NO_MITSHM=1
+      - XAUTHORITY=${XAUTHORITY}
+      # For Wayland
       - XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}
-      # - PULSE_SERVER=${PULSE_SERVER}
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY}
+      # For audio
+      - PULSE_SERVER=${PULSE_SERVER}
+      # Needed for software rendering of opengl
+      - LIBGL_ALWAYS_SOFTWARE=1
     # Overrides default entrypoint so things don't shut down after the process ends.
     command: sleep infinity

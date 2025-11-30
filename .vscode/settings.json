@@ -1,8 +1,10 @@
 {
     "files.associations": {
+        "*.json5": "jsonc",
         "*.repos": "yaml",
         "*.world": "xml",
-        "*.xacro": "xml"
+        "*.xacro": "xml",
+        "chrono": "cpp"
     },
     "python.autoComplete.extraPaths": [
         "/opt/ros/kilted/lib/python3.12/site-packages"
@@ -21,7 +23,7 @@
     },
     "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
     "C_Cpp.formatting": "disabled",
-    "uncrustify.configPath.linux": "/opt/ros/kilted/lib/python3.12/site-packages/ament_uncrustify/configuration/ament_code_style_0_78.cfg",
+    "uncrustify.configPath.linux": "/opt/ros/${env:ROS_DISTRO}/lib/ros_site_packages/ament_uncrustify/configuration/ament_code_style.cfg",
     "[cpp]": {
         "editor.defaultFormatter": "zachflower.uncrustify"
     },
@@ -68,6 +70,6 @@
         ".vscode-insiders",
         ".devcontainer/devcontainer.json"
     ],
-    "ament-task-provider.envSetup": "source /opt/ros/kilted/setup.bash",
-    "ros.distro": "kilted"
+    "ament-task-provider.envSetup": "source /opt/ros/${env:ROS_DISTRO}/setup.bash",
+    "ROS2.distro": "${env:ROS_DISTRO}",    
 }

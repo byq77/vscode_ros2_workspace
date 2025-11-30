@@ -2,7 +2,7 @@
     "name": "vscode_ros2_workspace",
     "dockerComposeFile": "../docker/compose.yaml",
     "service": "ros2_kilted_nvidia",
-    "remoteUser": "ubuntu",
+    "remoteUser": "ros",
     "initializeCommand": "",
     "postCreateCommand": "",
     "postAttachCommand": "",

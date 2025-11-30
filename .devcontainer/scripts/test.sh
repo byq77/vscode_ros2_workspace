@@ -10,4 +10,4 @@ fi
 if [ -f install/setup.bash ]; then source install/setup.bash; fi
 colcon test \
     $extra_args
-colcon test-result --verbose
+colcon test-result --all --verbose
