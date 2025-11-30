@@ -1,4 +1,4 @@
-ARG BASE_DOCKER_IMAGE=osrf/ros:kilted-desktop-full
+ARG BASE_DOCKER_IMAGE=osrf/ros:jazzy-desktop-full
 FROM $BASE_DOCKER_IMAGE AS base
 
 SHELL ["/bin/bash", "-c"]
@@ -106,9 +106,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install ROS 2 big packages
 RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \ 
-    # Does not exist yet for kilted?
-    # ros-${ROS_DISTRO}-plotjuggler-ros \
     python3-rosdoc2 \
+    ros-${ROS_DISTRO}-plotjuggler-ros \
     ros-${ROS_DISTRO}-rqt* \
     ros-${ROS_DISTRO}-ament-* \
     ros-${ROS_DISTRO}-rviz2 \

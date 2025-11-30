@@ -1,7 +1,7 @@
 {
     "name": "vscode_ros2_workspace",
     "dockerComposeFile": "../docker/compose.yaml",
-    "service": "ros2_kilted_nvidia",
+    "service": "ros2_jazzy_nvidia",
     "remoteUser": "ros",
     "initializeCommand": "",
     "postCreateCommand": "",
