@@ -109,6 +109,7 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     # Does not exist yet for kilted?
     # ros-${ROS_DISTRO}-plotjuggler-ros \
     python3-rosdoc2 \
+    ros-${ROS_DISTRO}-rmw-zenoh-cpp \
     ros-${ROS_DISTRO}-rqt* \
     ros-${ROS_DISTRO}-ament-* \
     ros-${ROS_DISTRO}-rviz2 \
@@ -125,5 +126,8 @@ RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /home/$USERNAME/.bashrc \
     && echo "if [ -f ${WORKSPACE}/install/setup.bash ]; then source ${WORKSPACE}/install/setup.bash; fi" >> /home/$USERNAME/.bashrc
 
 ENV AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1
+
+# Change default RMW implementation to zenoh cpp
+# ENV RMW_IMPLEMENTATION=rmw_zenoh_cpp
 
 ENV DEBIAN_FRONTEND=

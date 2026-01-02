@@ -17,7 +17,9 @@
                 "env": {
                     "BUILD_TYPE": "${input:buildType}",
                     "USE_MERGE_INSTALL": "${input:useMergeInstall}",
-                    "USE_SYMLINK_INSTALL": "${input:useSymlinkInstall}"
+                    "USE_SYMLINK_INSTALL": "${input:useSymlinkInstall}",
+                    "USE_CMAKE_CLEAN_FIRST": "${input:useCmakeCleanTargetFirst}",
+                    "USE_CMAKE_CLEAN_CACHE": "${input:useCmakeCleanCache}"
                 }
             },
             "problemMatcher": "$gcc"
@@ -35,9 +37,11 @@
                 "env": {
                     "BUILD_TYPE": "${input:buildType}",
                     "USE_MERGE_INSTALL": "${input:useMergeInstall}",
-                    "USE_SYMLINK_INSTALL": "${input:useSymlinkInstall}"
+                    "USE_SYMLINK_INSTALL": "${input:useSymlinkInstall}",
+                    "USE_CMAKE_CLEAN_FIRST": "${input:useCmakeCleanTargetFirst}",
+                    "USE_CMAKE_CLEAN_CACHE": "${input:useCmakeCleanCache}"
                 }
-            },            
+            },
             "problemMatcher": "$gcc"
         },
         // Test tasks
@@ -50,20 +54,13 @@
                 "env": {
                     "USE_MERGE_INSTALL": "${input:useMergeInstall}"
                 }
-            },            
+            },
             "group": {
                 "kind": "test",
                 "isDefault": true
             }
         },
-        // Clean
-        {
-            "label": "clean",
-            "detail": "Run the clean target",
-            "type": "shell",
-            "command": "colcon build --cmake-target clean",
-            "problemMatcher": "$gcc"
-        },
+        // Purge
         {
             "label": "purge",
             "detail": "Purge the workspace by deleting all generated files.",
@@ -71,6 +68,7 @@
             "command": "sudo rm -fr build install log; sudo py3clean .",
             "problemMatcher": []
         },
+        // Source
         {
             "label": "source",
             "detail": "Source the workspace",
@@ -435,6 +433,26 @@
                 "true",
                 "false"
             ]
-        }
+        },
+        {
+            "id": "useCmakeCleanTargetFirst",
+            "type": "pickString",
+            "description": "Do you want to run clean target first?",
+            "default": "false",
+            "options": [
+                "true",
+                "false"
+            ]
+        },
+        {
+            "id": "useCmakeCleanCache",
+            "type": "pickString",
+            "description": "Do you want to clean the CMake cache?",
+            "default": "false",
+            "options": [
+                "true",
+                "false"
+            ]
+        },
     ]
 }

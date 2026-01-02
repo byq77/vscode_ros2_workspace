@@ -26,7 +26,9 @@ BUILD_TYPE="${BUILD_TYPE:-RelWithDebInfo}"
 
 colcon_build() {
     local extra_args="$1"
-    local install_config="" 
+    local install_config=""
+    local extra_cmake=""
+    local parallel_workers="${PARALLEL_WORKERS:-4}"
 
     if [ "${USE_MERGE_INSTALL:-true}" == "true" ]; then
         install_config+=" --merge-install"
@@ -36,14 +38,24 @@ colcon_build() {
         install_config+=" --symlink-install"
     fi
 
+    if [ "${USE_CMAKE_CLEAN_FIRST:-false}" == "true" ]; then
+        extra_cmake+=" --cmake-clean-first"
+    fi
+
+    if [ "${USE_CMAKE_CLEAN_CACHE:-false}" == "true" ]; then
+        extra_cmake+=" --cmake-clean-cache"
+    fi
+
     echo "Building with install config: $install_config"
+    echo "Extra CMake args: ${extra_cmake:-None}"
 
     colcon build \
         $install_config \
+        --parallel-workers $parallel_workers \
         --base-paths "/ros_ws/src" \
         --cmake-args "-DCMAKE_BUILD_TYPE=$BUILD_TYPE" "-DCMAKE_EXPORT_COMPILE_COMMANDS=On" \
         -Wall -Wextra -Wpedantic \
-        "-DTEST_INTEGRATION=On" \
+        $extra_cmake \
         $extra_args
 }
 
